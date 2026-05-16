@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trading Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Vazirmatn',sans-serif;background:#0d1117;color:#e6edf3;min-height:100vh;padding:16px}
+.app{max-width:780px;margin:0 auto}
+.tabs{display:flex;gap:4px;margin-bottom:16px;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:4px}
+.tab{flex:1;padding:7px;text-align:center;font-size:12px;font-weight:600;border-radius:7px;cursor:pointer;color:#7d8590;transition:all .15s}
+.tab.active{background:#21262d;color:#f0f6fc}
+.page{display:none}.page.active{display:block}
+.ok{color:#3fb950}.warn{color:#d29922}.bad{color:#f85149}
+.bg-ok{background:rgba(63,185,80,.1);border-color:#2ea043!important}
+.bg-warn{background:rgba(210,153,34,.1);border-color:#9e6a03!important}
+.bg-bad{background:rgba(248,81,73,.1);border-color:#da3633!important}
+.btn{padding:6px 13px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid #30363d;background:#21262d;color:#e6edf3;font-family:'Vazirmatn',sans-serif;transition:all .15s}
+.btn:hover{background:#30363d}
+.btn.green{background:#238636;border-color:#2ea043;color:#fff}.btn.green:hover{background:#2ea043}
+.btn.blue{background:#1f6feb;border-color:#388bfd;color:#fff}.btn.blue:hover{background:#388bfd}
+.btn.red{background:transparent;border-color:#da3633;color:#f85149}.btn.red:hover{background:rgba(248,81,73,.08)}
+
+/* card */
+.card{background:#161b22;border:1px solid #21262d;border-radius:12px;overflow:hidden;margin-bottom:10px}
+.card-hdr{display:flex;align-items:center;padding:9px 13px;background:#1c2128;gap:8px}
+.card-hdr-title{font-size:13px;font-weight:700;color:#f0f6fc;flex:1;cursor:pointer;user-select:none}
+.badge{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700;background:#21262d;white-space:nowrap}
+.prog{height:3px;background:#21262d}.prog-fill{height:3px;transition:width .3s}
+.collapsed{display:none}
+
+/* 2-col checklist */
+.two-col{display:grid;grid-template-columns:1fr 1fr}
+.col-block{border-left:2px solid #30363d}.col-block:last-child{border-left:none}
+.col-hdr{font-size:10px;font-weight:700;color:#7d8590;padding:5px 12px 3px;background:#0d1117;border-top:1px solid #21262d;letter-spacing:.3px}
+.row{display:flex;align-items:center;gap:8px;padding:6px 12px;border-top:1px solid #161b22;cursor:pointer;outline:none;transition:background .1s}
+.row:hover,.row:focus{background:#1c2128}
+.row.notrade{border-right:2px solid #f85149}
+.tick{width:16px;height:16px;border:1.5px solid #30363d;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;transition:all .15s}
+.tick.checked{background:#238636;border-color:#2ea043;color:#3fb950}
+.row-text{font-size:11px;flex:1;line-height:1.4}
+.row.done .row-text{color:#484f58;text-decoration:line-through;text-decoration-color:#30363d}
+.row.notrade .row-text{color:#f0706a}
+
+/* day stats */
+.day-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:6px;margin-bottom:10px}
+.stat-card{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:8px 10px;text-align:center}
+.stat-card.total{border-width:1.5px}
+.stat-card .sl{font-size:10px;color:#7d8590;margin-bottom:2px}
+.stat-card .sv{font-size:19px;font-weight:700}
+.stat-card .ss{font-size:10px;color:#7d8590;margin-top:1px}
+.verdict{text-align:center;padding:8px;border-radius:9px;font-size:12px;font-weight:600;margin-bottom:10px;border:1px solid #21262d}
+
+/* trade card */
+.trade-card{background:#161b22;border:1px solid #21262d;border-radius:12px;overflow:hidden;margin-bottom:9px}
+.trade-hdr{display:flex;align-items:center;padding:9px 13px;background:#1c2128;border-bottom:1px solid #21262d;gap:7px;flex-wrap:wrap}
+.trade-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:9px 13px;border-bottom:1px solid #21262d}
+.trade-meta-bottom{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:0 13px 9px;border-bottom:1px solid #21262d}
+.meta-f{display:flex;flex-direction:column;gap:3px}
+.meta-f label{font-size:10px;color:#7d8590;font-weight:600}
+.meta-f input,.meta-f select{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:5px 7px;color:#e6edf3;font-size:12px;font-family:'Vazirmatn',sans-serif;outline:none;width:100%}
+.meta-f input:focus,.meta-f select:focus{border-color:#388bfd}
+.meta-f .calc{background:#161b22;border:1px solid #21262d;border-radius:6px;padding:5px 7px;font-size:12px;font-weight:700;text-align:center}
+.entry-method{padding:9px 13px;border-bottom:1px solid #21262d;display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.entry-method label{font-size:10px;color:#7d8590;font-weight:600;display:block;margin-bottom:5px}
+.method-btns{display:flex;gap:5px;flex-wrap:wrap}
+.method-btn{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #30363d;background:#21262d;color:#7d8590;font-family:'Vazirmatn',sans-serif;transition:all .15s}
+.method-btn.active{background:#1f6feb;border-color:#388bfd;color:#fff}
+.method-note{flex:1;min-width:160px}
+.method-note textarea{width:100%;background:#21262d;border:1px solid #30363d;border-radius:6px;padding:5px 7px;color:#e6edf3;font-size:11px;font-family:'Vazirmatn',sans-serif;outline:none;resize:none;height:36px}
+.method-note textarea:focus{border-color:#388bfd}
+.trade-footer{display:flex;align-items:center;justify-content:space-between;padding:7px 13px;border-top:1px solid #21262d;background:#0d1117;flex-wrap:wrap;gap:6px}
+.result-badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px}
+
+/* action bar */
+.action-bar{display:flex;gap:7px;margin-top:12px;flex-wrap:wrap}
+
+/* settings bar */
+.settings-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:8px 12px}
+.settings-bar label{font-size:11px;color:#7d8590;font-weight:600;white-space:nowrap}
+.settings-bar input{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:4px 8px;color:#e6edf3;font-size:12px;font-family:'Vazirmatn',sans-serif;outline:none;width:120px}
+.settings-bar input:focus{border-color:#388bfd}
+.account-display{font-size:13px;font-weight:700;color:#3fb950}
+
+/* weekly */
+.week-nav{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.week-nav button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:7px;padding:5px 12px;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:12px}
+.week-nav span{flex:1;text-align:center;font-size:13px;font-weight:600}
+.w-block{margin-bottom:14px}
+.w-block h3{font-size:13px;font-weight:700;color:#f0f6fc;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #21262d}
+.w-table{width:100%;border-collapse:collapse;font-size:11px}
+.w-table th{background:#161b22;padding:6px 8px;text-align:right;color:#7d8590;font-weight:600;border:1px solid #21262d}
+.w-table td{padding:6px 8px;border:1px solid #21262d;text-align:right;vertical-align:middle}
+.w-table tr:hover td{background:#1c2128}
+.w-table .avg-row td{background:#161b22;font-weight:700}
+.mini-bar{height:5px;border-radius:3px;background:#21262d;overflow:hidden;margin-top:2px;min-width:36px}
+.mini-fill{height:5px;border-radius:3px}
+.week-highlights{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.highlight-card{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:9px 12px}
+.highlight-card .hl-day{font-size:10px;color:#7d8590;margin-bottom:2px}
+.highlight-card .hl-score{font-size:21px;font-weight:700}
+.highlight-card .hl-bal{font-size:11px;color:#7d8590;margin-top:2px}
+.chart-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.chart-lbl{width:110px;font-size:11px;color:#7d8590;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chart-bar-bg{flex:1;height:13px;background:#161b22;border-radius:3px;overflow:hidden}
+.chart-bar-fill{height:13px;border-radius:3px;transition:width .4s}
+.chart-val{width:34px;text-align:left;font-weight:700;font-size:11px}
+.weak-item{display:flex;align-items:center;gap:7px;padding:5px 9px;background:#161b22;border:1px solid #21262d;border-radius:7px;margin-bottom:4px}
+.weak-pct{font-size:12px;font-weight:700;min-width:34px;text-align:center}
+.weak-tag{font-size:10px;padding:1px 6px;border-radius:10px;background:#21262d;color:#7d8590;white-space:nowrap}
+
+/* account chart */
+.balance-chart{width:100%;height:160px;position:relative;margin-bottom:14px}
+canvas#balChart{width:100%;height:160px}
+
+/* edit page */
+.edit-item{display:flex;align-items:center;gap:8px;padding:6px 13px;border-top:1px solid #161b22}
+.edit-item span{flex:1;font-size:12px}
+
+.empty{text-align:center;padding:30px;color:#7d8590;font-size:13px}
+.drawer{max-height:0;overflow:hidden;border-top:0px solid #21262d;background:#0d1117;padding:0;transition:max-height 0.3s ease}
+.drawer.open{max-height:2000px;border-top:1px solid #21262d}
+.drawer-inner{padding:10px 13px}
+.journal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.journal-grid-wide{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px}
+.jf{display:flex;flex-direction:column;gap:3px}
+.jf label{font-size:10px;color:#7d8590;font-weight:600}
+.jf input,.jf select,.jf textarea{background:#21262d;border:1px solid #30363d;border-radius:6px;padding:5px 7px;color:#e6edf3;font-size:12px;font-family:'Vazirmatn',sans-serif;outline:none;width:100%}
+.jf input:focus,.jf select:focus,.jf textarea:focus{border-color:#388bfd}
+.jf textarea{resize:none;height:50px}
+.rules-section{margin-bottom:12px}
+.rules-section h4{font-size:12px;font-weight:700;color:#f5a623;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid #21262d}
+.rule-item{font-size:12px;color:#e6edf3;padding:5px 0;border-bottom:1px solid #161b22;line-height:1.5}
+.rule-item:last-child{border-bottom:none}
+.rule-tag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;background:#21262d;color:#7d8590;margin-left:6px}
+.phase-header{display:flex;align-items:center;justify-content:space-between;padding:7px 13px;border-top:1px solid #21262d;background:#161b22}
+.phase-title{font-size:12px;font-weight:700;display:flex;align-items:center;gap:7px}
+.phase-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.phase-num.p1{background:#1f3a5f;color:#4fc3f7}
+.phase-num.p2{background:#1a3a1a;color:#3fb950}
+.phase-num.p3{background:#3a1a2a;color:#ce93d8}
+.phase-lock{font-size:11px;padding:2px 8px;border-radius:6px;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-weight:600;border:1px solid #30363d;background:#21262d;color:#7d8590}
+.phase-lock.locked{background:#2a0a0a;border-color:#da3633;color:#f85149}
+.phase-body.locked-phase{opacity:0.4;pointer-events:none}
+.jnl-card{background:#161b22;border:1px solid #21262d;border-radius:11px;overflow:hidden;margin-bottom:8px}
+.jnl-card-hdr{display:flex;align-items:center;gap:8px;padding:9px 13px;background:#1c2128;cursor:pointer}
+.jnl-card-hdr:hover{background:#21262d}
+.jnl-symbol{font-size:14px;font-weight:700;color:#f0f6fc}
+.jnl-date{font-size:11px;color:#7d8590}
+.jnl-dir{font-size:11px;padding:2px 7px;border-radius:6px;background:#21262d;color:#7d8590}
+.jnl-result{font-size:13px;font-weight:700;margin-right:auto}
+.jnl-body{display:none;padding:10px 13px;border-top:1px solid #21262d}
+.jnl-body.open{display:block}
+.jnl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:7px;margin-bottom:10px}
+.jnl-field{background:#0d1117;border:1px solid #21262d;border-radius:7px;padding:7px 9px}
+.jnl-field .jf-lbl{font-size:10px;color:#7d8590;margin-bottom:2px;font-weight:600}
+.jnl-field .jf-val{font-size:12px;color:#e6edf3;font-weight:500}
+.jnl-checklist{margin-top:8px}
+.jnl-checklist-title{font-size:11px;color:#7d8590;font-weight:600;margin-bottom:5px}
+.jnl-items{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.jnl-item{font-size:11px;padding:3px 0;display:flex;align-items:center;gap:5px}
+.jnl-item .ji-tick{width:14px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.ji-tick.ok{background:#238636;color:#3fb950}
+.ji-tick.no{background:#21262d;color:#484f58}
+.toast{position:fixed
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#238636;color:#fff;padding:8px 20px;border-radius:10px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('today')">📋 امروز</div>
+    <div class="tab" onclick="switchTab('weekly')">📊 هفتگی</div>
+    <div class="tab" onclick="switchTab('edit')">✏️ ویرایش</div>
+    <div class="tab" onclick="switchTab('journal')">📓 ژورنال</div>
+  </div>
+
+  <!-- TODAY -->
+  <div class="page active" id="page-today">
+    <div class="settings-bar">
+      <label>سایز حساب:</label>
+      <input type="number" id="accountSize" placeholder="14500" oninput="saveAccountSize()">
+      <span class="account-display" id="accountDisplay"></span>
+      <span style="font-size:11px;color:#7d8590;margin-right:auto" id="todayLabel"></span>
+    </div>
+    <div class="day-stats" id="dayStats"></div>
+    <div class="verdict" id="verdict"></div>
+
+    <!-- PRE-MARKET -->
+    <div class="card">
+      <div class="card-hdr">
+        <span class="card-hdr-title" onclick="toggleCard('pm-body')">🌅 آمادگی روز</span>
+        <span class="badge bad" id="pm-badge">0%</span>
+      </div>
+      <div class="prog"><div class="prog-fill" id="pm-prog" style="width:0%"></div></div>
+      <div id="pm-body"></div>
+    </div>
+
+    <!-- EOD -->
+    <div class="card" style="margin-top:4px">
+      <div class="card-hdr">
+        <span class="card-hdr-title" onclick="toggleCard('eod-body')">🌙 پایان روز</span>
+        <span class="badge bad" id="eod-badge">0%</span>
+      </div>
+      <div class="prog"><div class="prog-fill" id="eod-prog" style="width:0%"></div></div>
+      <div id="eod-body"></div>
+    </div>
+
+    <!-- TRADES -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;margin-top:10px">
+      <span style="font-size:13px;font-weight:700;color:#f0f6fc">معاملات امروز</span>
+      <button class="btn green" onclick="addTrade()">+ معامله جدید</button>
+    </div>
+    <div id="trades-wrap">
+      <div class="empty" id="no-trades">هنوز معامله‌ای ثبت نشده</div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn green" onclick="saveDay()">💾 ذخیره روز</button>
+      <button class="btn blue" onclick="exportExcel()">📥 دانلود Excel</button>
+      <button class="btn" onclick="supaLoad()" style="background:#2a1d3a;border-color:#7c3aed;color:#a78bfa">☁️ لود از سرور</button>
+      <button class="btn red" onclick="resetDay()">ریست</button>
+    </div>
+  </div>
+
+  <!-- WEEKLY -->
+  <div class="page" id="page-weekly">
+    <div class="week-nav">
+      <button onclick="changeWeek(-1)">◀ قبلی</button>
+      <span id="weekLabel"></span>
+      <button onclick="changeWeek(1)">بعدی ▶</button>
+    </div>
+    <div id="weekContent"></div>
+  </div>
+
+  <!-- EDIT -->
+  <div class="page" id="page-edit">
+    <p style="font-size:11px;color:#7d8590;margin-bottom:10px">آیتم‌هایی که نمیخوای رو حذف کن.</p>
+    <button class="btn red" onclick="resetToDefault()" style="margin-bottom:12px">بازگشت به پیش‌فرض</button>
+    <div id="edit-content"></div>
+  </div>
+  <!-- JOURNAL PAGE -->
+  <div class="page" id="page-journal">
+    <!-- stats bar -->
+    <div id="jnl-stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px;margin-bottom:12px"></div>
+    <!-- filters -->
+    <div style="display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
+      <input type="text" id="jnl-search" placeholder="جستجو Symbol..." oninput="renderJournal()"
+        style="background:#21262d;border:1px solid #30363d;border-radius:8px;padding:6px 10px;color:#e6edf3;font-size:12px;font-family:'Vazirmatn',sans-serif;outline:none;width:140px">
+      <select id="jnl-filter" onchange="renderJournal()"
+        style="background:#21262d;border:1px solid #30363d;border-radius:8px;padding:6px 10px;color:#e6edf3;font-size:12px;font-family:'Vazirmatn',sans-serif;outline:none">
+        <option value="">همه نتایج</option>
+        <option value="win">سود</option>
+        <option value="loss">ضرر</option>
+      </select>
+      <select id="jnl-method-filter" onchange="renderJournal()"
+        style="background:#21262d;border:1px solid #30363d;border-radius:8px;padding:6px 10px;color:#e6edf3;font-size:12px;font-family:'Vazirmatn',sans-serif;outline:none">
+        <option value="">همه روش‌ها</option>
+        <option>میتیگیشن</option><option>هانت</option><option>فلیپ</option><option>دابل شیفت</option><option>سایر</option>
+      </select>
+      <span style="font-size:11px;color:#7d8590;margin-right:auto" id="jnl-count"></span>
+    </div>
+    <div id="jnl-list"></div>
+  </div>
+</div>
+<datalist id="symbols-list">
+  <option value="EURUSD">
+  <option value="GBPUSD">
+  <option value="XAUUSD">
+  <option value="USDJPY">
+  <option value="USDCAD">
+  <option value="AUDUSD">
+  <option value="USDCHF">
+  <option value="GBPJPY">
+  <option value="EURJPY">
+  <option value="US30">
+  <option value="NAS100">
+  <option value="USOIL">
+  <option value="UKOIL">
+</datalist>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ═══════════════════════════════════════
+// CHECKLIST DATA
+// ═══════════════════════════════════════
+const PREMARKET_DEFAULT = [
+  {label:"وضعیت شخصی + محیطی", col:0, items:[
+    "وضعیت جسمی مناسب است و بیشتر از 5 ساعت خوابیدم",
+    "ذهن آرام است، FOMO ندارم و عصبانی نیستم",
+    "عجله یا قصد جبران ضرر ندارم",
+    "در این سشن بیشتر از دو استاپ نخوردم",
+    "انگیزه ورود «ستاپ» است نه احساسات",
+    "اگر شرایط مناسب نیست، امروز ترید نمی‌کنم",
+    "تحلیل و ترید روی کامپیوتر انجام می‌شود",
+    "محیط آرام و بدون مزاحمت است",
+  ]},
+  {label:"", col:1, items:[]},
+];
+
+const TRADE_DEFAULT = [
+  {label:"آمادگی بازار + وضعیت بازار", col:0, phase:1, items:[
+    "ساعت ترید مشخص است",
+    "اخبار مهم (CPI / FOMC / NFP) بررسی شد",
+    "HTF Bias مشخص است",
+    "سطوح کلیدی مشخص شدند",
+    "ناحیه مهم HTF مشخص است",
+    "نقدینگی و سشن‌ها بررسی شدند",
+    "سناریو A مشخص است (شیفت + میتیگیشن)",
+    "سناریو B مشخص است (میتیگیشن در جهت روند)",
+    "ساختار واضح است",
+    "High / Low ماژور مشخص است",
+    "موقعیت بازار واضح است (Hunt / Mitigation / Continuation)",
+  ]},
+  {label:"اعتبارسنجی OB", col:1, phase:1, items:[
+    "OB معتبر است",
+    "OB میتیگیت نشده است",
+    "OB نزدیک میتیگیشن است",
+    "قابلیت Flip / Inverse Flip دارد",
+    "ماژور یا مینور بودن OB مشخص است",
+    "اردرفلو یا FVG میتیگیت نشده است",
+  ]},
+  {label:"مدیریت ریسک + اجرای سفارش", col:1, phase:1, items:[
+    "نسبت ریسک به ریوارد حداقل 1:2 است",
+    "حد ضرر منطقی و پشت ساختار است",
+    "بنظرم Invalidation مشخص است",
+    "درصد ریسک معامله مشخص است",
+    "سایز پوزیشن بر اساس SL محاسبه شده است",
+    "حجم نهایی دوباره چک شد",
+    "نوع سفارش مشخص است",
+    "برایم TPها مشخص هستند",
+    "آلارم‌ها تنظیم شده‌اند",
+  ]},
+  {label:"ستاپ و تریگر", col:0, phase:2, items:[
+    "ستاپ دقیقاً مطابق پلن است",
+    "بنظرم Shift تایید شده است (در صورت نیاز)",
+    "بنظرم Mitigation تایید شده است (در صورت نیاز)",
+    "بنظرم OB معتبر است",
+    "بنظرم FVG معتبر است",
+    "تریگر چهارگانه وجود دارد",
+    "این معامله واقعاً A+ Setup است",
+  ]},
+  {label:"مدیریت خروج", col:1, phase:2, items:[
+    "وسط معامله پلن تغییر نمی‌کند",
+    "تصمیم احساسی گرفته نمی‌شود",
+    "خروج TP1 → حدود 30٪",
+    "خروج TP2 → حدود 30٪ + ریسک‌فری",
+    "خروج TP3 → حدود 30٪",
+    "حدود 10٪ حجم برای تریلینگ باقی مانده",
+    "استاپ دو TP عقب‌تر منتقل شده است",
+  ]},
+];
+
+const EOD_DEFAULT = [
+  {label:"بررسی معامله", col:0, items:[
+    "ورود طبق پلن بود",
+    "مدیریت سرمایه رعایت شد",
+    "خروج احساسی نبود",
+    "استاپ منطقی بود",
+  ]},
+  {label:"ژورنال", col:1, items:[
+    "اسکرین‌شات قبل و بعد ذخیره شد",
+    "دلیل ورود و خروج ثبت شد",
+    "نتیجه معامله ثبت شد (R / %)",
+    "اشتباهات و درس‌ها ثبت شدند",
+    "وضعیت ذهنی ثبت شد",
+  ]},
+  {label:"پایان روز", col:0, items:[
+    "بعد از رسیدن به تارگت سود/ضرر روزانه معامله متوقف شد",
+    "معامله ازدست‌رفته باعث تغییر پلن نشد",
+  ]},
+  {label:"", col:1, items:[
+    "تمرکز روی اجرای پلن بود نه پیش‌بینی بازار",
+    "بعد از ترک چارت، ادامه فکر کردن به بازار متوقف شد",
+  ]},
+];
+
+const ENTRY_METHODS = ["میتیگیشن","هانت","فلیپ","دابل شیفت","سایر"];
+
+let PREMARKET = JSON.parse(localStorage.getItem("tc_pm") || JSON.stringify(PREMARKET_DEFAULT));
+let TRADE_CHECKLIST = JSON.parse(localStorage.getItem("tc_tr") || JSON.stringify(TRADE_DEFAULT));
+let EOD = JSON.parse(localStorage.getItem("tc_eod") || JSON.stringify(EOD_DEFAULT));
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let preState={}, eodState={}, trades=[], tradeCounter=0, weekOffset=0, tickCounter=0;
+
+function getAccountSize(){return parseFloat(localStorage.getItem("tc_account")||"14500")||14500;}
+function saveAccountSize(){
+  const v=parseFloat(document.getElementById("accountSize").value)||14500;
+  localStorage.setItem("tc_account",v);
+  document.getElementById("accountDisplay").textContent="$"+v.toLocaleString();
+  updateDayStats();
+}
+function initAccount(){
+  const v=getAccountSize();
+  document.getElementById("accountSize").value=v;
+  document.getElementById("accountDisplay").textContent="$"+v.toLocaleString();
+}
+
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function colorC(p){return p>=1?"ok":p>=0.7?"warn":"bad";}
+function fillC(p){return p>=1?"#3fb950":p>=0.7?"#d29922":"#f85149";}
+function bgC(p){return p>=1?"bg-ok":p>=0.7?"bg-warn":"bg-bad";}
+
+// ═══════════════════════════════════════
+// BUILD 2-COL CHECKLIST
+// ═══════════════════════════════════════
+function buildTwoCol(container, sections, stateObj, prefix, onchange, isTradeChecklist){
+  container.innerHTML="";
+
+  if(isTradeChecklist){
+    // group by phase
+    const phases={1:[],2:[],3:[]};
+    sections.forEach(sec=>{const p=sec.phase||1;if(!phases[p])phases[p]=[];phases[p].push(sec);});
+    const phaseNames={1:"قبل از معامله",2:"حین معامله"};
+    const phaseColors={1:"p1",2:"p2",3:"p3"};
+    const lockKey=prefix+"_lock";
+    if(!window.phaseLocks) window.phaseLocks={};
+    if(!(lockKey in window.phaseLocks)) window.phaseLocks[lockKey]=true; // locked by default
+
+    [1,2,3].forEach(ph=>{
+      const secs=phases[ph];
+      if(!secs||!secs.length)return;
+
+      // phase header
+      const phHdr=document.createElement("div");phHdr.className="phase-header";
+      const lockBtn=document.createElement("button");
+      lockBtn.className="phase-lock"+(window.phaseLocks[lockKey]&&ph>1?" locked":"");
+      lockBtn.id=prefix+"-lockbtn-"+ph;
+
+      // check if prev phase complete
+      const isLocked=()=>{
+        if(!window.phaseLocks[lockKey]) return false;
+        if(ph===1) return false;
+        const prevSecs=phases[ph-1]||[];
+        return !prevSecs.every(sec=>sec.items.every(text=>stateObj[prefix+"::"+text]));
+      };
+
+      const updateLock=()=>{
+        const locked=isLocked();
+        const body=document.getElementById(prefix+"-phase-body-"+ph);
+        const btn=document.getElementById(prefix+"-lockbtn-"+ph);
+        if(body) body.classList.toggle("locked-phase",locked);
+        if(btn){
+          btn.textContent=locked?"🔒 قفل":"🔓 باز";
+          btn.className="phase-lock"+(locked?" locked":"");
+        }
+      };
+
+      lockBtn.textContent=isLocked()?"🔒 قفل":"🔓 باز";
+      lockBtn.onclick=(e)=>{
+        e.stopPropagation();
+        window.phaseLocks[lockKey]=!window.phaseLocks[lockKey];
+        [1,2,3].forEach(p=>{
+          const b=document.getElementById(prefix+"-lockbtn-"+p);
+          const body=document.getElementById(prefix+"-phase-body-"+p);
+          if(b&&body){
+            const locked=p>1&&window.phaseLocks[lockKey]&&!phases[p-1].every(sec=>sec.items.every(text=>stateObj[prefix+"::"+text]));
+            body.classList.toggle("locked-phase",locked);
+            b.textContent=locked?"🔒 قفل":"🔓 باز";
+            b.className="phase-lock"+(locked?" locked":"");
+          }
+        });
+      };
+
+      phHdr.innerHTML=`<div class="phase-title"><div class="phase-num ${phaseColors[ph]}">${ph}</div><span>${phaseNames[ph]}</span></div>`;
+      phHdr.appendChild(lockBtn);
+      container.appendChild(phHdr);
+
+      // phase body 2-col
+      const phBody=document.createElement("div");
+      phBody.id=prefix+"-phase-body-"+ph;
+      if(isLocked()) phBody.className="phase-body locked-phase";
+      else phBody.className="phase-body";
+
+      const left=document.createElement("div");left.className="col-block";
+      const right=document.createElement("div");right.className="col-block";
+      const grid=document.createElement("div");grid.className="two-col";
+      grid.appendChild(left);grid.appendChild(right);
+
+      secs.forEach(sec=>{
+        const col=sec.col===1?right:left;
+        if(sec.label){const lbl=document.createElement("div");lbl.className="col-hdr";lbl.textContent=sec.label;col.appendChild(lbl);}
+        sec.items.forEach(text=>{
+          const key=prefix+"::"+text;
+          if(!(key in stateObj)) stateObj[key]=false;
+          const row=document.createElement("div");
+          row.className="row";row.tabIndex=0;
+          const tid="t"+(++tickCounter);
+          row.innerHTML=`<div class="tick" id="${tid}"></div><span class="row-text">${text}</span>`;
+          const tog=()=>{
+            stateObj[key]=!stateObj[key];
+            const t=document.getElementById(tid);
+            if(t){t.className="tick"+(stateObj[key]?" checked":"");t.textContent=stateObj[key]?"✓":"";}
+            row.classList.toggle("done",stateObj[key]);
+            onchange();
+            // update locks after tick
+            [2,3].forEach(p=>{
+              const prevSecs=phases[p-1]||[];
+              const locked=window.phaseLocks[lockKey]&&!prevSecs.every(sec=>sec.items.every(t=>stateObj[prefix+"::"+t]));
+              const b=document.getElementById(prefix+"-lockbtn-"+p);
+              const body=document.getElementById(prefix+"-phase-body-"+p);
+              if(body) body.classList.toggle("locked-phase",locked);
+              if(b){b.textContent=locked?"🔒 قفل":"🔓 باز";b.className="phase-lock"+(locked?" locked":"");}
+            });
+          };
+          row.addEventListener("click",tog);
+          row.addEventListener("keydown",e=>{if(e.key===" "){e.preventDefault();tog();}});
+          col.appendChild(row);
+        });
+      });
+
+      phBody.appendChild(grid);
+      container.appendChild(phBody);
+    });
+  } else {
+    const left=document.createElement("div");left.className="col-block";
+    const right=document.createElement("div");right.className="col-block";
+    const grid=document.createElement("div");grid.className="two-col";
+    grid.appendChild(left);grid.appendChild(right);
+    sections.forEach(sec=>{
+      const col=sec.col===1?right:left;
+      if(sec.label){const lbl=document.createElement("div");lbl.className="col-hdr";lbl.textContent=sec.label;col.appendChild(lbl);}
+      sec.items.forEach(text=>{
+        const key=prefix+"::"+text;
+        if(!(key in stateObj)) stateObj[key]=false;
+        const row=document.createElement("div");
+        row.className="row"+(sec.noTrade?" notrade":"");
+        row.tabIndex=0;
+        const tid="t"+(++tickCounter);
+        row.innerHTML=`<div class="tick" id="${tid}"></div><span class="row-text">${text}</span>`;
+        const tog=()=>{
+          stateObj[key]=!stateObj[key];
+          const t=document.getElementById(tid);
+          if(t){t.className="tick"+(stateObj[key]?" checked":"");t.textContent=stateObj[key]?"✓":"";}
+          row.classList.toggle("done",stateObj[key]&&!sec.noTrade);
+          onchange();
+        };
+        row.addEventListener("click",tog);
+        row.addEventListener("keydown",e=>{if(e.key===" "){e.preventDefault();tog();}});
+        col.appendChild(row);
+      });
+    });
+    container.appendChild(grid);
+  }
+}
+
+// ═══════════════════════════════════════
+// SCORE
+// ═══════════════════════════════════════
+function calcScore(stateObj,sections,prefix){
+  let c=0,t=0;
+  sections.forEach(sec=>{
+    if(sec.noTrade)return;
+    sec.items.forEach(text=>{t++;if(stateObj[prefix+"::"+text])c++;});
+  });
+  return{checked:c,total:t,pct:t>0?c/t:0};
+}
+function updBadge(bid,pid,pct){
+  const b=document.getElementById(bid),p=document.getElementById(pid);
+  if(b){b.textContent=Math.round(pct*100)+"%";b.className="badge "+colorC(pct);}
+  if(p){p.style.width=Math.round(pct*100)+"%";p.style.background=fillC(pct);}
+}
+
+// ═══════════════════════════════════════
+// UPDATE DAY STATS
+// ═══════════════════════════════════════
+function updateDayStats(){
+  const pm=calcScore(preState,PREMARKET,"pm");
+  const eod=calcScore(eodState,EOD,"eod");
+  updBadge("pm-badge","pm-prog",pm.pct);
+  updBadge("eod-badge","eod-prog",eod.pct);
+
+  let tChk=pm.checked+eod.checked, tAll=pm.total+eod.total;
+  let trScores=[];
+  const acct=getAccountSize();
+
+  trades.forEach(t=>{
+    const sc=calcScore(t.state,TRADE_CHECKLIST,"tr-"+t.id);
+    tChk+=sc.checked; tAll+=sc.total;
+    trScores.push(sc.pct);
+    updBadge("tbadge-"+t.id,"tprog-"+t.id,sc.pct);
+    // update result display
+    const res=parseFloat(t.resultDollar)||0;
+    const risk=parseFloat(t.riskDollar)||0;
+    const R=risk>0?(res/risk).toFixed(2):"—";
+    const pct=acct>0?((res/acct)*100).toFixed(2):"—";
+    const rd=document.getElementById("tres-r-"+t.id);
+    const pd=document.getElementById("tres-pct-"+t.id);
+    if(rd) rd.textContent=R!=="—"?(R>0?"+":"")+R+"R":"—";
+    if(pd) pd.textContent=pct!=="—"?(pct>0?"+":"")+pct+"%":"—";
+    if(rd) rd.className="calc "+(res>0?"ok":res<0?"bad":"");
+    if(pd) pd.className="calc "+(res>0?"ok":res<0?"bad":"");
+  });
+
+  const gp=tAll>0?tChk/tAll:0;
+  const noTr=document.getElementById("no-trades");
+  if(noTr) noTr.style.display=trades.length?"none":"block";
+
+  const stats=document.getElementById("dayStats");
+  stats.innerHTML="";
+
+  // total P&L for day
+  const dayPnl=trades.reduce((a,t)=>a+(parseFloat(t.resultDollar)||0),0);
+  const dayPnlPct=acct>0?((dayPnl/acct)*100).toFixed(2):"0";
+
+  [
+    {label:"🌅 آمادگی روز",pct:pm.pct,sub:`${pm.checked}/${pm.total}`},
+    {label:"📊 معاملات",pct:trScores.length?trScores.reduce((a,b)=>a+b,0)/trScores.length:0,sub:`${trades.length} معامله`},
+    {label:"🌙 پایان روز",pct:eod.pct,sub:`${eod.checked}/${eod.total}`},
+    {label:"سود/ضرر روز",pct:dayPnl>=0?1:0,sub:(dayPnl>=0?"+":"")+dayPnl.toFixed(0)+"$ ("+dayPnlPct+"%)",noScore:true},
+    {label:"کل امتیاز",pct:gp,sub:`${tChk}/${tAll}`,total:true},
+  ].forEach(c=>{
+    const d=document.createElement("div");
+    d.className="stat-card"+(c.total?" total "+bgC(gp):"");
+    if(c.noScore){
+      d.innerHTML=`<div class="sl">${c.label}</div><div class="sv ${dayPnl>=0?"ok":"bad"}" style="font-size:14px;padding-top:3px">${c.sub}</div>`;
+    } else {
+      d.innerHTML=`<div class="sl">${c.label}</div><div class="sv ${colorC(c.pct)}">${Math.round(c.pct*100)}%</div><div class="ss">${c.sub}</div>`;
+    }
+    stats.appendChild(d);
+  });
+
+  const v=document.getElementById("verdict");
+  if(gp>=1){v.textContent="✅ همه چک‌ها کامل";v.className="verdict bg-ok";}
+  else if(gp>=0.85){v.textContent="🟡 تقریباً آماده";v.className="verdict bg-warn";}
+  else{v.textContent="🔴 ستاپ کامل نیست — وارد نشو";v.className="verdict bg-bad";}
+}
+
+function toggleCard(id){document.getElementById(id)?.classList.toggle("collapsed");}
+function toggleDrawer(drawerId, tradeId){
+  const el=document.getElementById(drawerId);
+  if(!el) return;
+  const isOpen=el.classList.contains("open");
+  const wrap=document.getElementById("tw-"+tradeId);
+  if(wrap) wrap.querySelectorAll(".drawer").forEach(d=>{if(d!==el)d.classList.remove("open");});
+  el.classList.toggle("open",!isOpen);
+  if(!isOpen){
+    setTimeout(()=>el.scrollIntoView({behavior:"smooth", block:"nearest"}), 50);
+  }
+}
+
+// ═══════════════════════════════════════
+// ADD TRADE
+// ═══════════════════════════════════════
+function addTrade(){
+  const id=++tradeCounter;
+  const trade={id,symbol:"EURUSD",tf:"M15",direction:"Buy",resultDollar:"",riskDollar:"",method:"",methodNote:"",
+    tp:"",obType:"",confidence:"",emotion:"",mistakes:"",notes:"",
+    imgBefore:"",imgTrigger:"",imgAfter:"",state:{}};
+  trades.push(trade);
+
+  const wrap=document.createElement("div");
+  wrap.className="trade-card";wrap.id="tw-"+id;
+
+  // header
+  const hdr=document.createElement("div");hdr.className="trade-hdr";
+  hdr.innerHTML=`
+    <span style="font-size:11px;color:#7d8590;font-weight:600">معامله ${id}</span>
+    <span class="badge" id="tbadge-${id}">0%</span>
+    <span style="margin-right:auto;font-size:11px;color:#7d8590" id="tsym-${id}"></span>
+    <button class="btn" style="padding:3px 8px;font-size:11px;background:#2a1d00;border-color:#9e6a03;color:#d29922" onclick="toggleDrawer('rdrawer-${id}',${id})">📌 قوانین</button>
+    <button class="btn" style="padding:3px 8px;font-size:11px" onclick="toggleCard('tbody-${id}')">▾</button>
+    <button class="btn red" style="padding:3px 8px;font-size:11px" onclick="removeTrade(${id})">حذف</button>`;
+
+  // meta row 1: Symbol, TF, Direction, Risk
+  const meta=document.createElement("div");meta.className="trade-meta";
+  meta.innerHTML=`
+    <div class="meta-f"><label>Symbol</label><input list="symbols-list" value="EURUSD" id="tsymbol-${id}" oninput="updateMeta(${id})"></div>
+    <div class="meta-f"><label>تایم‌فریم</label>
+      <select id="ttf-${id}" onchange="updateMeta(${id})">
+        <option>M1</option><option>M5</option><option selected>M15</option><option>M30</option>
+        <option>H1</option><option>H4</option><option>D1</option>
+      </select></div>
+    <div class="meta-f"><label>جهت</label>
+      <select id="tdir-${id}" onchange="updateMeta(${id})">
+        <option>Buy</option><option>Sell</option>
+      </select></div>
+    <div class="meta-f"><label>ریسک ($)</label><input type="number" placeholder="145" id="trisk-${id}" oninput="updateMeta(${id})"></div>`;
+
+  // meta row 2: Result, R, %, TP
+  const meta2=document.createElement("div");meta2.className="trade-meta";
+  meta2.innerHTML=`
+    <div class="meta-f"><label>نتیجه ($)</label><input type="number" placeholder="+290" id="tresult-${id}" oninput="updateMeta(${id})"></div>
+    <div class="meta-f"><label>R</label><div class="calc" id="tres-r-${id}">—</div></div>
+    <div class="meta-f"><label>درصد حساب</label><div class="calc" id="tres-pct-${id}">—</div></div>
+    <div class="meta-f"><label>TP (هدف)</label><input type="text" placeholder="سقف سشن / های ماژور" id="ttp-${id}" oninput="updateMeta(${id})"></div>`;
+
+  // entry method + OB + confidence + emotion
+  const meta3=document.createElement("div");meta3.className="trade-meta";
+  meta3.innerHTML=`
+    <div class="meta-f"><label>OB Type</label>
+      <select id="tobtype-${id}" onchange="updateMeta(${id})">
+        <option value="">—</option>
+        <option>ماژور</option><option>مینور</option><option>Breaker</option>
+      </select></div>
+    <div class="meta-f"><label>Confidence</label>
+      <select id="tconf-${id}" onchange="updateMeta(${id})">
+        <option value="">—</option>
+        <option>A+ (90-100%)</option><option>A (80-89%)</option><option>B (70-79%)</option><option>C (زیر 70%)</option>
+      </select></div>
+    <div class="meta-f"><label>Emotion</label>
+      <select id="temo-${id}" onchange="updateMeta(${id})">
+        <option value="">—</option>
+        <option>آرام و متمرکز</option><option>کمی مضطرب</option><option>FOMO</option><option>عجله</option><option>بی‌تفاوت</option>
+      </select></div>
+    <div class="meta-f"><label></label></div>`;
+
+  // نحوه ورود
+  const em=document.createElement("div");em.className="entry-method";
+  let mbtns=`<div style="flex:1"><label>نحوه ورود</label><div class="method-btns">`;
+  ENTRY_METHODS.forEach(m=>{
+    mbtns+=`<button class="method-btn" id="meth-${id}-${m}" onclick="setMethod(${id},'${m}')">${m}</button>`;
+  });
+  mbtns+=`</div></div><div class="method-note"><label>توضیح (اختیاری)</label><textarea id="mnote-${id}" placeholder="چرا وارد شدی..." oninput="updateMeta(${id})"></textarea></div>`;
+  em.innerHTML=mbtns;
+
+  // screenshots
+  const shots=document.createElement("div");shots.className="trade-meta";
+  shots.style.cssText="border-top:1px solid #21262d";
+  shots.innerHTML=`
+    <div class="meta-f"><label>📸 قبل از معامله</label><input type="url" id="tImgBefore-${id}" placeholder="لینک TradingView..." oninput="updateMeta(${id})"></div>
+    <div class="meta-f"><label>📸 تریگر (اختیاری)</label><input type="url" id="tImgTrigger-${id}" placeholder="لینک TradingView..." oninput="updateMeta(${id})"></div>
+    <div class="meta-f"><label>📸 بعد از معامله</label><input type="url" id="tImgAfter-${id}" placeholder="لینک TradingView..." oninput="updateMeta(${id})"></div>
+    <div class="meta-f"></div>`;
+
+  // image preview
+  const imgPrev=document.createElement("div");
+  imgPrev.id="tImgPreview-"+id;
+  imgPrev.style.cssText="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;padding:0 13px 8px;border-bottom:1px solid #21262d";
+
+  // mistakes + notes
+  const notes=document.createElement("div");
+  notes.style.cssText="display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:9px 13px;border-bottom:1px solid #21262d";
+  notes.innerHTML=`
+    <div class="meta-f"><label>Mistakes</label><textarea id="tmistakes-${id}" placeholder="اشتباهات این معامله..." style="height:50px;resize:none" oninput="updateMeta(${id})"></textarea></div>
+    <div class="meta-f"><label>Notes / Lesson</label><textarea id="tnotes-${id}" placeholder="درس‌ها و نکات..." style="height:50px;resize:none" oninput="updateMeta(${id})"></textarea></div>`;
+
+  // progress
+  const prog=document.createElement("div");prog.className="prog";
+  const pf=document.createElement("div");pf.className="prog-fill";pf.id="tprog-"+id;pf.style.width="0%";
+  prog.appendChild(pf);
+
+  // checklist body
+  const body=document.createElement("div");body.id="tbody-"+id;
+  buildTwoCol(body,TRADE_CHECKLIST,trade.state,"tr-"+id,updateDayStats,true);
+
+  // rules drawer only
+  const rdrawer=document.createElement("div");rdrawer.className="drawer";rdrawer.id="rdrawer-"+id;
+  rdrawer.innerHTML=`<div class="drawer-inner">
+    <div style="font-size:11px;font-weight:700;color:#d29922;margin-bottom:10px">📌 قوانین کلیدی</div>
+    <div class="rules-section">
+      <h4>🧠 روانشناسی</h4>
+      <div class="rule-item">تمرکز بیشتر از انجام ندادن‌ها ایجاد می‌شود</div>
+      <div class="rule-item">ورودی‌های ذهنی مهم هستند</div>
+      <div class="rule-item">تریدر حرفه‌ای فقط پلن را اجرا می‌کند</div>
+    </div>
+    <div class="rules-section">
+      <h4>📐 تکنیکال</h4>
+      <div class="rule-item">FVG و OB هر دو قابلیت ریجکت دارند</div>
+      <div class="rule-item">FVG وسیع → اردرفلو مهم‌تر است</div>
+      <div class="rule-item">سقف و کف سشن‌ها در 15m مینور هستند</div>
+      <div class="rule-item">اولین کندل FVG نباید Inside Bar باشد</div>
+    </div>
+    <div class="rules-section">
+      <h4>⚡ ورود تهاجمی</h4>
+      <div class="rule-item">فقط در دو حالت: <span class="rule-tag">سقف و کف سشن‌ها</span> <span class="rule-tag">OB دور از میتیگیشن</span></div>
+      <div class="rule-item" style="color:#f85149">ریسک بالا → نیازمند مدیریت سرمایه دقیق</div>
+    </div>
+  </div>`;
+
+  wrap.appendChild(hdr);
+  wrap.appendChild(meta);
+  wrap.appendChild(meta2);
+  wrap.appendChild(meta3);
+  wrap.appendChild(em);
+  wrap.appendChild(shots);
+  wrap.appendChild(imgPrev);
+  wrap.appendChild(notes);
+  wrap.appendChild(prog);
+  wrap.appendChild(body);
+  wrap.appendChild(rdrawer);
+
+  document.getElementById("trades-wrap").appendChild(wrap);
+  updateDayStats();
+}
+
+
+function buildTradeCard(trade){
+  const id=trade.id;
+  const wrap=document.createElement("div");
+  wrap.className="trade-card";wrap.id="tw-"+id;
+
+  const hdr=document.createElement("div");hdr.className="trade-hdr";
+  hdr.innerHTML=`
+    <span style="font-size:11px;color:#7d8590;font-weight:600">معامله ${id}</span>
+    <span class="badge" id="tbadge-${id}">0%</span>
+    <span style="margin-right:auto;font-size:11px;color:#7d8590" id="tsym-${id}"></span>
+    <button class="btn" style="padding:3px 8px;font-size:11px;background:#2a1d00;border-color:#9e6a03;color:#d29922" onclick="toggleDrawer('rdrawer-${id}',${id})">📌 قوانین</button>
+    <button class="btn" style="padding:3px 8px;font-size:11px" onclick="toggleCard('tbody-${id}')">▾</button>
+    <button class="btn red" style="padding:3px 8px;font-size:11px" onclick="removeTrade(${id})">حذف</button>`;
+
+  const meta=document.createElement("div");meta.className="trade-meta";
+  meta.innerHTML=`
+    <div class="meta-f"><label>Symbol</label><input list="symbols-list" value="${trade.symbol||'EURUSD'}" id="tsymbol-${id}" oninput="updateMeta(${id})"></div>
+    <div class="meta-f"><label>تایم‌فریم</label>
+      <select id="ttf-${id}" onchange="updateMeta(${id})">
+        <option${trade.tf==='M1'?' selected':''}>M1</option><option${trade.tf==='M5'?' selected':''}>M5</option>
+        <option${(!trade.tf||trade.tf==='M15')?' selected':''}>M15</option><option${trade.tf==='M30'?' selected':''}>M30</option>
+        <option${trade.tf==='H1'?' selected':''}>H1</option><option${trade.tf==='H4'?' selected':''}>H4</option>
+        <option${trade.tf==='D1'?' selected':''}>D1</option>
+      </select></div>
+    <div class="meta-f"><label>جهت</label>
+      <select id="tdir-${id}" onchange="updateMeta(${id})">
+        <option${trade.direction==='Buy'?' selected':''}>Buy</option>
+        <option${trade.direction==='Sell'?' selected':''}>Sell</option>
+      </select></div>
+    <div class="meta-f"><label>ریسک ($)</label><input type="number" value="${trade.riskDollar||''}" id="trisk-${id}" oninput="updateMeta(${id})"></div>`;
+
+  const meta2=document.createElement("div");meta2.className="trade-meta";
+  meta2.innerHTML=`
+    <div class="meta-f"><label>نتیجه ($)</label><input type="number" value="${trade.resultDollar||''}" id="tresult-${id}" oninput="updateMeta(${id})"></div>
+    <div class="meta-f"><label>R</label><div class="calc" id="tres-r-${id}">—</div></div>
+    <div class="meta-f"><label>درصد حساب</label><div class="calc" id="tres-pct-${id}">—</div></div>
+    <div class="meta-f"><label>TP (هدف)</label><input type="text" value="${trade.tp||''}" placeholder="سقف سشن / های ماژور" id="ttp-${id}" oninput="updateMeta(${id})"></div>`;
+
+  const meta3=document.createElement("div");meta3.className="trade-meta";
+  meta3.innerHTML=`
+    <div class="meta-f"><label>OB Type</label>
+      <select id="tobtype-${id}" onchange="updateMeta(${id})">
+        <option value="">—</option>
+        <option${trade.obType==='ماژور'?' selected':''}>ماژور</option>
+        <option${trade.obType==='مینور'?' selected':''}>مینور</option>
+        <option${trade.obType==='Breaker'?' selected':''}>Breaker</option>
+      </select></div>
+    <div class="meta-f"><label>Confidence</label>
+      <select id="tconf-${id}" onchange="updateMeta(${id})">
+        <option value="">—</option>
+        <option${trade.confidence==='A+ (90-100%)'?' selected':''}>A+ (90-100%)</option>
+        <option${trade.confidence==='A (80-89%)'?' selected':''}>A (80-89%)</option>
+        <option${trade.confidence==='B (70-79%)'?' selected':''}>B (70-79%)</option>
+        <option${trade.confidence==='C (زیر 70%)'?' selected':''}>C (زیر 70%)</option>
+      </select></div>
+    <div class="meta-f"><label>Emotion</label>
+      <select id="temo-${id}" onchange="updateMeta(${id})">
+        <option value="">—</option>
+        <option${trade.emotion==='آرام و متمرکز'?' selected':''}>آرام و متمرکز</option>
+        <option${trade.emotion==='کمی مضطرب'?' selected':''}>کمی مضطرب</option>
+        <option${trade.emotion==='FOMO'?' selected':''}>FOMO</option>
+        <option${trade.emotion==='عجله'?' selected':''}>عجله</option>
+        <option${trade.emotion==='بی‌تفاوت'?' selected':''}>بی‌تفاوت</option>
+      </select></div>
+    <div class="meta-f"><label></label></div>`;
+
+  const em=document.createElement("div");em.className="entry-method";
+  let mbtns=`<div style="flex:1"><label>نحوه ورود</label><div class="method-btns">`;
+  ENTRY_METHODS.forEach(m=>{
+    mbtns+=`<button class="method-btn${trade.method===m?' active':''}" id="meth-${id}-${m}" onclick="setMethod(${id},'${m}')">${m}</button>`;
+  });
+  mbtns+=`</div></div><div class="method-note"><label>توضیح (اختیاری)</label><textarea id="mnote-${id}" oninput="updateMeta(${id})">${trade.methodNote||''}</textarea></div>`;
+  em.innerHTML=mbtns;
+
+  const shots=document.createElement("div");shots.className="trade-meta";shots.style.cssText="border-top:1px solid #21262d";
+  shots.innerHTML=`
+    <div class="meta-f"><label>📸 قبل از معامله</label><input type="url" value="${trade.imgBefore||''}" id="tImgBefore-${id}" oninput="updateMeta(${id})"></div>
+    <div class="meta-f"><label>📸 تریگر (اختیاری)</label><input type="url" value="${trade.imgTrigger||''}" id="tImgTrigger-${id}" oninput="updateMeta(${id})"></div>
+    <div class="meta-f"><label>📸 بعد از معامله</label><input type="url" value="${trade.imgAfter||''}" id="tImgAfter-${id}" oninput="updateMeta(${id})"></div>
+    <div class="meta-f"></div>`;
+
+  const imgPrev=document.createElement("div");
+  imgPrev.id="tImgPreview-"+id;
+  imgPrev.style.cssText="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;padding:0 13px 8px;border-bottom:1px solid #21262d";
+
+  const notes=document.createElement("div");
+  notes.style.cssText="display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:9px 13px;border-bottom:1px solid #21262d";
+  notes.innerHTML=`
+    <div class="meta-f"><label>Mistakes</label><textarea id="tmistakes-${id}" style="height:50px;resize:none" oninput="updateMeta(${id})">${trade.mistakes||''}</textarea></div>
+    <div class="meta-f"><label>Notes / Lesson</label><textarea id="tnotes-${id}" style="height:50px;resize:none" oninput="updateMeta(${id})">${trade.notes||''}</textarea></div>`;
+
+  const prog=document.createElement("div");prog.className="prog";
+  const pf=document.createElement("div");pf.className="prog-fill";pf.id="tprog-"+id;pf.style.width="0%";
+  prog.appendChild(pf);
+
+  const body=document.createElement("div");body.id="tbody-"+id;
+  buildTwoCol(body,TRADE_CHECKLIST,trade.state,"tr-"+id,updateDayStats,true);
+
+  // restore ticks
+  if(trade.state){
+    Object.entries(trade.state).forEach(([key,val])=>{
+      if(val){
+        const rows=body.querySelectorAll(".row");
+        rows.forEach(row=>{
+          if(row.dataset.key===key){
+            row.classList.add("done");
+            const ticks=row.querySelectorAll(".tick");
+            ticks.forEach(t=>{t.className="tick checked";t.textContent="✓";});
+          }
+        });
+      }
+    });
+  }
+
+  const rdrawer=document.createElement("div");rdrawer.className="drawer";rdrawer.id="rdrawer-"+id;
+  rdrawer.innerHTML=`<div class="drawer-inner">
+    <div style="font-size:11px;font-weight:700;color:#d29922;margin-bottom:10px">📌 قوانین کلیدی</div>
+    <div class="rules-section"><h4>🧠 روانشناسی</h4>
+      <div class="rule-item">تمرکز بیشتر از انجام ندادن‌ها ایجاد می‌شود</div>
+      <div class="rule-item">ورودی‌های ذهنی مهم هستند</div>
+      <div class="rule-item">تریدر حرفه‌ای فقط پلن را اجرا می‌کند</div>
+    </div>
+    <div class="rules-section"><h4>📐 تکنیکال</h4>
+      <div class="rule-item">FVG و OB هر دو قابلیت ریجکت دارند</div>
+      <div class="rule-item">FVG وسیع → اردرفلو مهم‌تر است</div>
+      <div class="rule-item">سقف و کف سشن‌ها در 15m مینور هستند</div>
+      <div class="rule-item">اولین کندل FVG نباید Inside Bar باشد</div>
+    </div>
+    <div class="rules-section"><h4>⚡ ورود تهاجمی</h4>
+      <div class="rule-item">فقط در دو حالت: <span class="rule-tag">سقف و کف سشن‌ها</span> <span class="rule-tag">OB دور از میتیگیشن</span></div>
+      <div class="rule-item" style="color:#f85149">ریسک بالا → نیازمند مدیریت سرمایه دقیق</div>
+    </div>
+  </div>`;
+
+  wrap.appendChild(hdr);wrap.appendChild(meta);wrap.appendChild(meta2);wrap.appendChild(meta3);
+  wrap.appendChild(em);wrap.appendChild(shots);wrap.appendChild(imgPrev);
+  wrap.appendChild(notes);wrap.appendChild(prog);wrap.appendChild(body);wrap.appendChild(rdrawer);
+
+  const container=document.getElementById("trades-wrap");
+  const noTrades=document.getElementById("no-trades");
+  if(noTrades) noTrades.style.display="none";
+  container.appendChild(wrap);
+
+  // show images if exist
+  setTimeout(()=>updateMeta(id),100);
+}
+
+function setMethod(id,method){
+  const t=trades.find(x=>x.id===id);if(!t)return;
+  t.method=t.method===method?"":method;
+  ENTRY_METHODS.forEach(m=>{
+    const b=document.getElementById("meth-"+id+"-"+m);
+    if(b) b.className="method-btn"+(t.method===m?" active":"");
+  });
+}
+
+function updateMeta(id){
+  const t=trades.find(x=>x.id===id);if(!t)return;
+  t.symbol=document.getElementById("tsymbol-"+id)?.value||"EURUSD";
+  t.tf=document.getElementById("ttf-"+id)?.value||"";
+  t.direction=document.getElementById("tdir-"+id)?.value||"";
+  t.resultDollar=document.getElementById("tresult-"+id)?.value||"";
+  t.riskDollar=document.getElementById("trisk-"+id)?.value||"";
+  t.methodNote=document.getElementById("mnote-"+id)?.value||"";
+  t.tp=document.getElementById("ttp-"+id)?.value||"";
+  t.obType=document.getElementById("tobtype-"+id)?.value||"";
+  t.confidence=document.getElementById("tconf-"+id)?.value||"";
+  t.emotion=document.getElementById("temo-"+id)?.value||"";
+  t.mistakes=document.getElementById("tmistakes-"+id)?.value||"";
+  t.notes=document.getElementById("tnotes-"+id)?.value||"";
+  t.imgBefore=document.getElementById("tImgBefore-"+id)?.value||"";
+  t.imgTrigger=document.getElementById("tImgTrigger-"+id)?.value||"";
+  t.imgAfter=document.getElementById("tImgAfter-"+id)?.value||"";
+
+  // image previews
+  const prev=document.getElementById("tImgPreview-"+id);
+  if(prev){
+    prev.innerHTML="";
+    [{url:t.imgBefore,label:"قبل"},{url:t.imgTrigger,label:"تریگر"},{url:t.imgAfter,label:"بعد"}].forEach(img=>{
+      if(img.url){
+        prev.innerHTML+=`<div style="border:1px solid #21262d;border-radius:8px;overflow:hidden">
+          <div style="font-size:10px;color:#7d8590;padding:4px 8px;background:#161b22">${img.label}</div>
+          <img src="${img.url}" style="width:100%;max-height:120px;object-fit:cover;display:block" onerror="this.style.display='none'">
+        </div>`;
+      }
+    });
+  }
+
+  const acct=getAccountSize();
+  const res=parseFloat(t.resultDollar)||0;
+  const risk=parseFloat(t.riskDollar)||0;
+  const R=risk>0?(res/risk).toFixed(2):"—";
+  const pct=acct>0?((res/acct)*100).toFixed(2):"—";
+  const rd=document.getElementById("tres-r-"+id);
+  const pd=document.getElementById("tres-pct-"+id);
+  if(rd){rd.textContent=R!=="—"?(R>0?"+":"")+R+"R":"—";rd.className="calc "+(res>0?"ok":res<0?"bad":"");}
+  if(pd){pd.textContent=pct!=="—"?(pct>0?"+":"")+pct+"%":"—";pd.className="calc "+(res>0?"ok":res<0?"bad":"");}
+
+  const sym=document.getElementById("tsym-"+id);
+  if(sym) sym.textContent=t.symbol?(t.symbol+" | "+t.tf+" | "+t.direction):"";
+  updateDayStats();
+}
+
+
+function removeTrade(id){
+  trades=trades.filter(t=>t.id!==id);
+  document.getElementById("tw-"+id)?.remove();
+  updateDayStats();
+}
+
+// ═══════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════
+function resetDay(){
+  if(!confirm("همه چیز پاک بشه؟"))return;
+  preState={};eodState={};trades=[];tradeCounter=0;
+  document.getElementById("trades-wrap").innerHTML='<div class="empty" id="no-trades">هنوز معامله‌ای ثبت نشده</div>';
+  buildTwoCol(document.getElementById("pm-body"),PREMARKET,preState,"pm",updateDayStats);
+  buildTwoCol(document.getElementById("eod-body"),EOD,eodState,"eod",updateDayStats);
+  updateDayStats();
+}
+
+// ═══════════════════════════════════════
+// SAVE DAY
+// ═══════════════════════════════════════
+function saveDay(){
+  const date=todayStr();
+  const acct=getAccountSize();
+  const pmSc=calcScore(preState,PREMARKET,"pm");
+  const eodSc=calcScore(eodState,EOD,"eod");
+
+  const tradeData=trades.map(t=>{
+    const sc=calcScore(t.state,TRADE_CHECKLIST,"tr-"+t.id);
+    const items=[];
+    TRADE_CHECKLIST.forEach(sec=>sec.items.forEach(text=>{
+      items.push({section:sec.label,item:text,checked:!!t.state["tr-"+t.id+"::"+text]});
+    }));
+    const res=parseFloat(t.resultDollar)||0;
+    const risk=parseFloat(t.riskDollar)||0;
+    return{...t,score:sc,items,
+      R:risk>0?parseFloat((res/risk).toFixed(2)):null,
+      pctAccount:acct>0?parseFloat((res/acct*100).toFixed(2)):null};
+  });
+
+  const pmItems=[];
+  PREMARKET.forEach(sec=>sec.items.forEach(text=>{
+    pmItems.push({section:sec.label,item:text,checked:!!preState["pm::"+text],noTrade:!!sec.noTrade});
+  }));
+  const eodItems=[];
+  EOD.forEach(sec=>sec.items.forEach(text=>{
+    eodItems.push({item:text,checked:!!eodState["eod::"+text]});
+  }));
+
+  const tChk=pmSc.checked+eodSc.checked+tradeData.reduce((a,t)=>a+t.score.checked,0);
+  const tAll=pmSc.total+eodSc.total+tradeData.reduce((a,t)=>a+t.score.total,0);
+  const dayPnl=tradeData.reduce((a,t)=>a+(parseFloat(t.resultDollar)||0),0);
+
+  const obj={date,saved:new Date().toISOString(),accountSize:acct,
+    premarket:{score:pmSc,items:pmItems},
+    eod:{score:eodSc,items:eodItems},
+    trades:tradeData,
+    total:{checked:tChk,total:tAll,pct:tAll>0?Math.round(tChk/tAll*100):0},
+    dayPnl,balanceAfter:acct+dayPnl};
+
+  const hist=JSON.parse(localStorage.getItem("tc_v3")||"{}");
+  hist[date]=obj;
+  localStorage.setItem("tc_v3",JSON.stringify(hist));
+  showToast("✅ روز "+date+" ذخیره شد");
+  supaSave(date, obj);
+  if(document.getElementById("page-weekly").classList.contains("active")) renderWeekly();
+}
+
+// ═══════════════════════════════════════
+// EXPORT EXCEL
+// ═══════════════════════════════════════
+function exportExcel(){
+  const hist=JSON.parse(localStorage.getItem("tc_v3")||"{}");
+  const days=Object.values(hist).sort((a,b)=>a.date>b.date?1:-1);
+  if(!days.length){showToast("هیچ روزی ذخیره نشده");return;}
+  const wb=XLSX.utils.book_new();
+
+  // Sheet 1: Summary
+  const sum=[["تاریخ","امتیاز کل %","آمادگی روز %","پایان روز %","تعداد معاملات","سود/ضرر روز ($)","موجودی بعد ($)"]];
+  days.forEach(d=>{
+    sum.push([d.date,d.total.pct,Math.round(d.premarket.score.pct*100),Math.round(d.eod.score.pct*100),d.trades.length,d.dayPnl||0,d.balanceAfter||""]);
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sum),"خلاصه روزانه");
+
+  // Sheet 2: Trade details
+  const td=[["تاریخ","#","Symbol","TF","جهت","نحوه ورود","توضیح ورود","نتیجه ($)","ریسک ($)","R","% حساب","امتیاز %","بخش","آیتم","تیک"]];
+  days.forEach(d=>{
+    d.trades.forEach(t=>{
+      t.items.forEach(item=>{
+        td.push([d.date,t.id,t.symbol,t.tf,t.direction,t.method||"",t.methodNote||"",
+          t.resultDollar||"",t.riskDollar||"",t.R||"",t.pctAccount||"",
+          Math.round(t.score.pct*100),item.section,item.item,item.checked?"✓":"✗"]);
+      });
+    });
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(td),"جزئیات معاملات");
+
+  // Sheet 3: Pre-market
+  const pm=[["تاریخ","بخش","آیتم","تیک","NO TRADE"]];
+  days.forEach(d=>{
+    d.premarket.items.forEach(i=>pm.push([d.date,i.section||"",i.item,i.checked?"✓":"✗",i.noTrade?"بله":""]));
+  });
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(pm),"آمادگی روز");
+
+  // Sheet 4: EOD
+  const eod=[["تاریخ","آیتم","تیک"]];
+  days.forEach(d=>{d.eod.items.forEach(i=>eod.push([d.date,i.item,i.checked?"✓":"✗"]));});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(eod),"پایان روز");
+
+  XLSX.writeFile(wb,"trading_log_"+todayStr()+".xlsx");
+  showToast("📥 Excel دانلود شد");
+}
+
+// ═══════════════════════════════════════
+// WEEKLY
+// ═══════════════════════════════════════
+function getWeekDates(off){
+  const now=new Date(),day=now.getDay();
+  const sat=new Date(now);sat.setDate(now.getDate()-((day+1)%7)+(off*7));
+  return Array.from({length:7},(_,i)=>{const d=new Date(sat);d.setDate(sat.getDate()+i);return d.toISOString().slice(0,10);});
+}
+const DAY_FA=["شنبه","یکشنبه","دوشنبه","سه‌شنبه","چهارشنبه","پنجشنبه","جمعه"];
+
+function renderWeekly(){
+  const dates=getWeekDates(weekOffset);
+  document.getElementById("weekLabel").textContent=dates[0]+" تا "+dates[6];
+  const hist=JSON.parse(localStorage.getItem("tc_v3")||"{}");
+  const week=dates.map(d=>hist[d]||null);
+  const active=week.filter(d=>d);
+  const el=document.getElementById("weekContent");
+  if(!active.length){el.innerHTML=`<div class="empty">هیچ روزی برای این هفته ذخیره نشده</div>`;return;}
+
+  let html="";
+
+  // highlights
+  const sorted=[...active].sort((a,b)=>b.total.pct-a.total.pct);
+  const best=sorted[0],worst=sorted[sorted.length-1];
+  const weekPnl=active.reduce((a,d)=>a+(d.dayPnl||0),0);
+  html+=`<div class="week-highlights">
+    <div class="highlight-card bg-ok"><div class="hl-day">🏆 بهترین — ${best.date}</div><div class="hl-score ok">${best.total.pct}%</div><div class="hl-bal">${best.dayPnl>=0?"+":""}${(best.dayPnl||0).toFixed(0)}$</div></div>
+    <div class="highlight-card bg-bad"><div class="hl-day">📉 بدترین — ${worst.date}</div><div class="hl-score bad">${worst.total.pct}%</div><div class="hl-bal">${worst.dayPnl>=0?"+":""}${(worst.dayPnl||0).toFixed(0)}$</div></div>
+  </div>`;
+
+  // balance chart
+  html+=`<div class="w-block"><h3>📈 رشد حساب</h3>
+    <canvas id="balChart" height="140"></canvas>
+  </div>`;
+
+  // daily score table
+  html+=`<div class="w-block"><h3>امتیاز روزانه</h3><table class="w-table"><thead><tr>
+    <th>روز</th><th>آمادگی</th><th>معاملات</th><th>پایان روز</th><th>امتیاز</th><th>P&L</th>
+  </tr></thead><tbody>`;
+  week.forEach((d,i)=>{
+    if(!d){html+=`<tr><td style="color:#484f58">${DAY_FA[i]}<br><small>${dates[i]}</small></td><td colspan="5" style="color:#484f58;text-align:center">—</td></tr>`;return;}
+    const trAvg=d.trades.length?Math.round(d.trades.reduce((a,t)=>a+t.score.pct*100,0)/d.trades.length):null;
+    const pm=Math.round(d.premarket.score.pct*100);
+    const eod=Math.round(d.eod.score.pct*100);
+    const pnl=d.dayPnl||0;
+    const cell=(v)=>v!==null?`<span style="color:${fillC(v/100)};font-weight:700">${v}%</span><div class="mini-bar"><div class="mini-fill" style="width:${v}%;background:${fillC(v/100)}"></div></div>`:`<span style="color:#484f58">—</span>`;
+    html+=`<tr>
+      <td>${DAY_FA[i]}<br><small style="color:#7d8590">${d.date}</small></td>
+      <td>${cell(pm)}</td><td>${cell(trAvg)}</td><td>${cell(eod)}</td>
+      <td style="font-weight:700;color:${fillC(d.total.pct/100)}">${d.total.pct}%</td>
+      <td style="font-weight:700;color:${pnl>=0?"#3fb950":"#f85149"}">${pnl>=0?"+":""}${pnl.toFixed(0)}$</td>
+    </tr>`;
+  });
+  if(active.length>1){
+    const avgTot=Math.round(active.reduce((a,d)=>a+d.total.pct,0)/active.length);
+    html+=`<tr class="avg-row"><td>میانگین / جمع</td><td>—</td><td>—</td><td>—</td>
+      <td style="color:${fillC(avgTot/100)}">${avgTot}%</td>
+      <td style="color:${weekPnl>=0?"#3fb950":"#f85149"};font-weight:700">${weekPnl>=0?"+":""}${weekPnl.toFixed(0)}$</td>
+    </tr>`;
+  }
+  html+=`</tbody></table></div>`;
+
+  // section chart
+  html+=`<div class="w-block"><h3>نمودار بخش‌ها (میانگین هفته)</h3>`;
+  [["آمادگی روز","pm"],["پایان روز","eod"]].forEach(([lbl,key])=>{
+    const vals=active.map(d=>key==="pm"?d.premarket.score.pct*100:d.eod.score.pct*100);
+    const avg=Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+    html+=`<div class="chart-row"><div class="chart-lbl">${lbl}</div><div class="chart-bar-bg"><div class="chart-bar-fill" style="width:${avg}%;background:${fillC(avg/100)}"></div></div><div class="chart-val ${colorC(avg/100)}">${avg}%</div></div>`;
+  });
+  html+=`</div>`;
+
+  // most forgotten
+  const missed={};
+  active.forEach(d=>{
+    [...d.premarket.items.filter(i=>!i.noTrade&&!i.checked),
+     ...d.eod.items.filter(i=>!i.checked)].forEach(i=>{
+      missed[i.item]=(missed[i.item]||{count:0,item:i.item,sec:i.section||"پایان روز"});
+      missed[i.item].count++;
+    });
+    d.trades.forEach(t=>t.items.filter(i=>!i.checked).forEach(i=>{
+      missed[i.item]=(missed[i.item]||{count:0,item:i.item,sec:i.section});
+      missed[i.item].count++;
+    }));
+  });
+  const top=Object.values(missed).sort((a,b)=>b.count-a.count).slice(0,7);
+  if(top.length){
+    html+=`<div class="w-block"><h3>⚠️ بیشترین فراموشی‌ها</h3>`;
+    top.forEach(m=>{
+      const p=Math.round((1-m.count/active.length)*100);
+      html+=`<div class="weak-item"><span class="weak-pct" style="color:${fillC(p/100)}">${p}%</span><span style="flex:1;font-size:11px">${m.item}</span><span class="weak-tag">${m.sec}</span></div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // trades table
+  const allTrades=active.flatMap(d=>d.trades.map(t=>({...t,date:d.date})));
+  if(allTrades.length){
+    html+=`<div class="w-block"><h3>معاملات هفته</h3><table class="w-table"><thead><tr>
+      <th>تاریخ</th><th>Symbol</th><th>جهت</th><th>روش</th><th>نتیجه $</th><th>R</th><th>%</th><th>امتیاز</th>
+    </tr></thead><tbody>`;
+    allTrades.forEach(t=>{
+      const res=parseFloat(t.resultDollar)||0;
+      html+=`<tr>
+        <td>${t.date}</td>
+        <td style="font-weight:700">${t.symbol||"—"}</td>
+        <td>${t.direction}</td>
+        <td style="font-size:10px">${t.method||"—"}</td>
+        <td style="color:${res>0?"#3fb950":res<0?"#f85149":"#7d8590"};font-weight:700">${res>=0?"+":""}${res}$</td>
+        <td style="font-weight:700;color:${(t.R||0)>0?"#3fb950":(t.R||0)<0?"#f85149":"#7d8590"}">${t.R!==null?((t.R>0?"+":"")+t.R+"R"):"—"}</td>
+        <td style="color:${(t.pctAccount||0)>0?"#3fb950":(t.pctAccount||0)<0?"#f85149":"#7d8590"}">${t.pctAccount!==null?((t.pctAccount>0?"+":"")+t.pctAccount+"%"):"—"}</td>
+        <td style="color:${fillC(t.score.pct)};font-weight:700">${Math.round(t.score.pct*100)}%</td>
+      </tr>`;
+    });
+    html+=`</tbody></table></div>`;
+  }
+
+  el.innerHTML=html;
+
+  // draw balance chart
+  setTimeout(()=>{
+    const canvas=document.getElementById("balChart");
+    if(!canvas)return;
+    const ctx=canvas.getContext("2d");
+    canvas.width=canvas.offsetWidth*2;canvas.height=280;
+    ctx.scale(2,2);
+    const W=canvas.offsetWidth/2,H=140;
+
+    const pts=[];
+    let bal=active[0]?.accountSize||14500;
+    pts.push({d:"شروع",b:bal});
+    active.forEach(d=>{bal+=(d.dayPnl||0);pts.push({d:d.date.slice(5),b:bal});});
+
+    const minB=Math.min(...pts.map(p=>p.b));
+    const maxB=Math.max(...pts.map(p=>p.b));
+    const range=maxB-minB||1;
+    const pad=16;
+    const toY=b=>H-pad-(b-minB)/range*(H-pad*2);
+    const toX=(i)=>pad+(W-pad*2)*i/(pts.length-1||1);
+
+    ctx.fillStyle="#161b22";ctx.fillRect(0,0,W,H);
+    // grid
+    ctx.strokeStyle="#21262d";ctx.lineWidth=0.5;
+    for(let i=0;i<=4;i++){const y=pad+(H-pad*2)*i/4;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(W-pad,y);ctx.stroke();}
+
+    // line
+    ctx.beginPath();ctx.strokeStyle="#388bfd";ctx.lineWidth=1.5;
+    pts.forEach((p,i)=>{i===0?ctx.moveTo(toX(i),toY(p.b)):ctx.lineTo(toX(i),toY(p.b));});
+    ctx.stroke();
+
+    // fill
+    ctx.beginPath();
+    pts.forEach((p,i)=>{i===0?ctx.moveTo(toX(i),toY(p.b)):ctx.lineTo(toX(i),toY(p.b));});
+    ctx.lineTo(toX(pts.length-1),H-pad);ctx.lineTo(toX(0),H-pad);ctx.closePath();
+    ctx.fillStyle="rgba(56,139,253,0.1)";ctx.fill();
+
+    // dots + labels
+    pts.forEach((p,i)=>{
+      const x=toX(i),y=toY(p.b);
+      ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);
+      ctx.fillStyle=p.b>=(pts[0]?.b||0)?"#3fb950":"#f85149";ctx.fill();
+      ctx.fillStyle="#7d8590";ctx.font="9px Vazirmatn";ctx.textAlign="center";
+      ctx.fillText(p.d,x,H-3);
+      if(i>0){
+        ctx.fillStyle=p.b>=(pts[i-1]?.b||0)?"#3fb950":"#f85149";
+        ctx.fillText("$"+Math.round(p.b).toLocaleString(),x,y-6);
+      }
+    });
+  },100);
+}
+
+function changeWeek(dir){weekOffset+=dir;if(weekOffset>0)weekOffset=0;renderWeekly();}
+
+// ═══════════════════════════════════════
+// EDIT
+// ═══════════════════════════════════════
+function renderEdit(){
+  const el=document.getElementById("edit-content");
+  let html="";
+  const sec=(title,data,key)=>{
+    html+=`<div class="card" style="margin-bottom:9px"><div class="card-hdr"><span class="card-hdr-title">${title}</span></div>`;
+    data.forEach((sec,si)=>{
+      if(sec.label) html+=`<div style="font-size:10px;color:#7d8590;padding:5px 13px 2px;background:#0d1117;border-top:1px solid #21262d;font-weight:600">${sec.label}</div>`;
+      sec.items.forEach((item,ii)=>{
+        html+=`<div class="edit-item"><span>${item}</span><button class="btn red" style="padding:2px 8px;font-size:11px" onclick="delItem('${key}',${si},${ii})">حذف</button></div>`;
+      });
+    });
+    html+=`</div>`;
+  };
+  sec("🌅 آمادگی روز",PREMARKET,"pm");
+  sec("🔍 چک‌لیست معامله",TRADE_CHECKLIST,"tr");
+  sec("🌙 پایان روز",EOD,"eod");
+  el.innerHTML=html;
+}
+
+function delItem(key,si,ii){
+  const map={"pm":PREMARKET,"tr":TRADE_CHECKLIST,"eod":EOD};
+  const data=map[key];
+  data[si].items.splice(ii,1);
+  if(data[si].items.length===0) data.splice(si,1);
+  localStorage.setItem("tc_"+key,JSON.stringify(data));
+  preState={};eodState={};
+  buildTwoCol(document.getElementById("pm-body"),PREMARKET,preState,"pm",updateDayStats);
+  buildTwoCol(document.getElementById("eod-body"),EOD,eodState,"eod",updateDayStats);
+  updateDayStats();renderEdit();
+  showToast("حذف شد");
+}
+
+function resetToDefault(){
+  if(!confirm("بازگشت به پیش‌فرض؟"))return;
+  PREMARKET.splice(0,9999,...JSON.parse(JSON.stringify(PREMARKET_DEFAULT)));
+  TRADE_CHECKLIST.splice(0,9999,...JSON.parse(JSON.stringify(TRADE_DEFAULT)));
+  EOD.splice(0,9999,...JSON.parse(JSON.stringify(EOD_DEFAULT)));
+  ["tc_pm","tc_tr","tc_eod"].forEach(k=>localStorage.removeItem(k));
+  preState={};eodState={};
+  buildTwoCol(document.getElementById("pm-body"),PREMARKET,preState,"pm",updateDayStats);
+  buildTwoCol(document.getElementById("eod-body"),EOD,eodState,"eod",updateDayStats);
+  updateDayStats();renderEdit();showToast("✅ بازگشت به پیش‌فرض");
+}
+
+// ═══════════════════════════════════════
+// TAB + TOAST
+// ═══════════════════════════════════════
+function switchTab(name){
+  document.querySelectorAll(".tab").forEach((t,i)=>t.classList.toggle("active",["today","weekly","edit","journal"][i]===name));
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("page-"+name).classList.add("active");
+  if(name==="weekly")renderWeekly();
+  if(name==="edit")renderEdit();
+  if(name==="journal")renderJournal();
+}
+
+// ═══════════════════════════════════════
+// JOURNAL PAGE
+// ═══════════════════════════════════════
+function renderJournal(){
+  const hist=JSON.parse(localStorage.getItem("tc_v3")||"{}");
+  const search=(document.getElementById("jnl-search")?.value||"").toLowerCase();
+  const filter=document.getElementById("jnl-filter")?.value||"";
+  const methodFilter=document.getElementById("jnl-method-filter")?.value||"";
+
+  // collect all trades
+  let allTrades=[];
+  Object.values(hist).sort((a,b)=>b.date>a.date?1:-1).forEach(day=>{
+    day.trades.forEach(t=>{
+      allTrades.push({...t, date:day.date, dayPnl:day.dayPnl, accountSize:day.accountSize});
+    });
+  });
+
+  // filter
+  if(search) allTrades=allTrades.filter(t=>(t.symbol||"").toLowerCase().includes(search));
+  if(filter==="win") allTrades=allTrades.filter(t=>parseFloat(t.resultDollar||0)>0);
+  if(filter==="loss") allTrades=allTrades.filter(t=>parseFloat(t.resultDollar||0)<0);
+  if(methodFilter) allTrades=allTrades.filter(t=>t.method===methodFilter);
+
+  // stats
+  const statsEl=document.getElementById("jnl-stats");
+  const wins=allTrades.filter(t=>parseFloat(t.resultDollar||0)>0).length;
+  const losses=allTrades.filter(t=>parseFloat(t.resultDollar||0)<0).length;
+  const totalPnl=allTrades.reduce((a,t)=>a+(parseFloat(t.resultDollar||0)),0);
+  const totalR=allTrades.filter(t=>t.R).reduce((a,t)=>a+(t.R||0),0);
+  const winRate=allTrades.length>0?Math.round(wins/allTrades.length*100):0;
+  const avgScore=allTrades.length>0?Math.round(allTrades.reduce((a,t)=>a+t.score.pct*100,0)/allTrades.length):0;
+
+  statsEl.innerHTML=[
+    {l:"کل معاملات",v:allTrades.length,s:"",c:""},
+    {l:"Win Rate",v:winRate+"%",s:wins+"W / "+losses+"L",c:winRate>=50?"ok":"bad"},
+    {l:"مجموع P&L",v:(totalPnl>=0?"+":"")+totalPnl.toFixed(0)+"$",s:"",c:totalPnl>=0?"ok":"bad"},
+    {l:"مجموع R",v:(totalR>=0?"+":"")+totalR.toFixed(1)+"R",s:"",c:totalR>=0?"ok":"bad"},
+    {l:"میانگین امتیاز",v:avgScore+"%",s:"",c:avgScore>=80?"ok":avgScore>=60?"warn":"bad"},
+  ].map(s=>`<div class="stat-card"><div class="sl">${s.l}</div><div class="sv ${s.c}" style="font-size:16px">${s.v}</div>${s.s?`<div class="ss">${s.s}</div>`:""}</div>`).join("");
+
+  document.getElementById("jnl-count").textContent=allTrades.length+" معامله";
+
+  if(!allTrades.length){
+    document.getElementById("jnl-list").innerHTML=`<div class="empty">هیچ معامله‌ای پیدا نشد</div>`;
+    return;
+  }
+
+  const list=document.getElementById("jnl-list");
+  list.innerHTML="";
+
+  allTrades.forEach((t,idx)=>{
+    const res=parseFloat(t.resultDollar||0);
+    const resColor=res>0?"#3fb950":res<0?"#f85149":"#7d8590";
+    const resText=(res>=0?"+":"")+res.toFixed(0)+"$"+(t.R?" | "+(t.R>0?"+":"")+t.R+"R":"");
+
+    const card=document.createElement("div");
+    card.className="jnl-card";
+
+    // get journal data if saved
+    const jSymbol=t.jSymbol||t.symbol||"";
+    const jSetup=t.jSetup||"";
+    const jEntry=t.jEntry||"";
+    const jSL=t.jSL||"";
+    const jTP=t.jTP||"";
+    const jOBType=t.jOBType||"";
+    const jFVGType=t.jFVGType||"";
+    const jLiq=t.jLiq||"";
+    const jRisk=t.jRisk||"";
+    const jConf=t.jConf||"";
+    const jEmo=t.jEmo||"";
+    const jMistakes=t.jMistakes||"";
+    const jNotes=t.jNotes||"";
+
+    const hdr=document.createElement("div");
+    hdr.className="jnl-card-hdr";
+    hdr.innerHTML=`
+      <span class="jnl-symbol">${t.symbol||"—"}</span>
+      <span class="jnl-dir">${t.direction}</span>
+      <span class="jnl-date">${t.date}</span>
+      ${t.method?`<span style="font-size:10px;padding:2px 7px;border-radius:6px;background:#1f2d1f;color:#3fb950">${t.method}</span>`:""}
+      <span class="jnl-result" style="color:${resColor}">${resText}</span>
+      <span style="font-size:11px;color:${resColor};font-weight:700">${Math.round(t.score.pct*100)}%</span>`;
+
+    const body=document.createElement("div");
+    body.className="jnl-body";
+    body.id="jnl-body-"+idx;
+
+    // build fields
+    const fields=[
+      {l:"TF",v:t.tf},
+      {l:"نحوه ورود",v:t.method},
+      {l:"TP",v:t.tp||jTP},
+      {l:"OB Type",v:t.obType||jOBType},
+      {l:"Confidence",v:t.confidence||jConf},
+      {l:"Emotion",v:t.emotion||jEmo},
+      {l:"توضیح ورود",v:t.methodNote},
+      {l:"نتیجه",v:t.resultDollar?(t.resultDollar>0?"+":"")+t.resultDollar+"$":""},
+      {l:"R",v:t.R?(t.R>0?"+":"")+t.R+"R":""},
+      {l:"% حساب",v:t.pctAccount?(t.pctAccount>0?"+":"")+t.pctAccount+"%":""},
+    ].filter(f=>f.v);
+
+    let bodyHtml=`<div class="jnl-grid">`;
+    fields.forEach(f=>{
+      bodyHtml+=`<div class="jnl-field"><div class="jf-lbl">${f.l}</div><div class="jf-val">${f.v}</div></div>`;
+    });
+    bodyHtml+=`</div>`;
+
+    // screenshots
+    const imgs=[
+      {url:t.imgBefore||"",label:"📸 قبل از معامله"},
+      {url:t.imgTrigger||"",label:"📸 تریگر"},
+      {url:t.imgAfter||"",label:"📸 بعد از معامله"},
+    ].filter(i=>i.url);
+    if(imgs.length){
+      bodyHtml+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:10px">`;
+      imgs.forEach(img=>{
+        bodyHtml+=`<div style="border:1px solid #21262d;border-radius:8px;overflow:hidden">
+          <div style="font-size:10px;color:#7d8590;padding:4px 8px;background:#0d1117">${img.label}</div>
+          <img src="${img.url}" style="width:100%;max-height:180px;object-fit:cover;display:block;cursor:pointer"
+            onclick="window.open('${img.url}','_blank')"
+            onerror="this.parentElement.style.display='none'">
+        </div>`;
+      });
+      bodyHtml+=`</div>`;
+    }
+
+    if((t.mistakes||jMistakes)||(t.notes||jNotes)){
+      bodyHtml+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px">`;
+      const m=t.mistakes||jMistakes, n=t.notes||jNotes;
+      if(m) bodyHtml+=`<div class="jnl-field"><div class="jf-lbl">Mistakes</div><div class="jf-val" style="white-space:pre-wrap">${m}</div></div>`;
+      if(n) bodyHtml+=`<div class="jnl-field"><div class="jf-lbl">Notes / Lesson</div><div class="jf-val" style="white-space:pre-wrap">${n}</div></div>`;
+      bodyHtml+=`</div>`;
+    }
+
+    // checklist summary
+    if(t.items&&t.items.length){
+      bodyHtml+=`<div class="jnl-checklist"><div class="jnl-checklist-title">چک‌لیست معامله</div><div class="jnl-items">`;
+      t.items.forEach(item=>{
+        bodyHtml+=`<div class="jnl-item"><div class="ji-tick ${item.checked?"ok":"no"}">${item.checked?"✓":"✗"}</div><span style="font-size:11px;color:${item.checked?"#e6edf3":"#484f58"}">${item.item}</span></div>`;
+      });
+      bodyHtml+=`</div></div>`;
+    }
+
+    body.innerHTML=bodyHtml;
+    hdr.onclick=()=>body.classList.toggle("open");
+    card.appendChild(hdr);
+    card.appendChild(body);
+    list.appendChild(card);
+  });
+}
+function showToast(msg){
+  const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2500);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+// ═══════════════════════════════════════
+// SUPABASE CONFIG
+// ═══════════════════════════════════════
+const SUPA_URL = "https://jwwokzhrhzfhbezjugwx.supabase.co";
+const SUPA_KEY = "sb_publishable_P5D-5shgbcm35w4FPQE6_A_OjxDVJ-C";
+const SUPA_HEADERS = {
+  "Content-Type": "application/json",
+  "apikey": SUPA_KEY,
+  "Authorization": "Bearer " + SUPA_KEY
+};
+
+async function supaLoad() {
+  try {
+    const res = await fetch(SUPA_URL + "/rest/v1/checklist?select=*&order=date.desc", {headers: SUPA_HEADERS});
+    if(!res.ok) throw new Error("load failed");
+    const rows = await res.json();
+    const hist = {};
+    rows.forEach(r => { hist[r.date] = r.data; });
+    localStorage.setItem("tc_v3", JSON.stringify(hist));
+    // restore today's data if exists
+    const today = todayStr();
+    if(hist[today]){
+      restoreToday(hist[today]);
+    }
+    showToast("☁️ داده‌ها از سرور لود شد");
+  } catch(e) {
+    console.error("Supabase load error:", e);
+  }
+}
+
+function restoreToday(dayData){
+  // restore premarket
+  preState={};
+  if(dayData.premarket&&dayData.premarket.items){
+    dayData.premarket.items.forEach(item=>{
+      preState["pm::"+item.item]=item.checked;
+    });
+  }
+  buildTwoCol(document.getElementById("pm-body"),PREMARKET,preState,"pm",updateDayStats);
+
+  // restore EOD
+  eodState={};
+  if(dayData.eod&&dayData.eod.items){
+    dayData.eod.items.forEach(item=>{
+      eodState["eod::"+item.item]=item.checked;
+    });
+  }
+  buildTwoCol(document.getElementById("eod-body"),EOD,eodState,"eod",updateDayStats);
+
+  // restore trades
+  trades=[];tradeCounter=0;
+  document.getElementById("trades-wrap").innerHTML='<div class="empty" id="no-trades">هنوز معامله‌ای ثبت نشده</div>';
+
+  if(dayData.trades&&dayData.trades.length){
+    dayData.trades.forEach(savedTrade=>{
+      tradeCounter++;
+      const id=tradeCounter;
+      const trade={id,
+        symbol:savedTrade.symbol||"EURUSD",
+        tf:savedTrade.tf||"M15",
+        direction:savedTrade.direction||"Buy",
+        resultDollar:savedTrade.resultDollar||"",
+        riskDollar:savedTrade.riskDollar||"",
+        method:savedTrade.method||"",
+        methodNote:savedTrade.methodNote||"",
+        tp:savedTrade.tp||"",
+        obType:savedTrade.obType||"",
+        confidence:savedTrade.confidence||"",
+        emotion:savedTrade.emotion||"",
+        mistakes:savedTrade.mistakes||"",
+        notes:savedTrade.notes||"",
+        imgBefore:savedTrade.imgBefore||"",
+        imgTrigger:savedTrade.imgTrigger||"",
+        imgAfter:savedTrade.imgAfter||"",
+        state:{}
+      };
+      trades.push(trade);
+
+      // rebuild state from saved items
+      if(savedTrade.items){
+        savedTrade.items.forEach(item=>{
+          trade.state["tr-"+id+"::"+item.item]=item.checked;
+        });
+      }
+
+      // build trade card (reuse addTrade logic but with prefilled data)
+      buildTradeCard(trade);
+    });
+  }
+  updateDayStats();
+}
+
+async function supaSave(date, data) {
+  try {
+    // first try to update existing row
+    const checkRes = await fetch(SUPA_URL + "/rest/v1/checklist?date=eq." + date, {
+      headers: SUPA_HEADERS
+    });
+    const existing = await checkRes.json();
+
+    let res;
+    if(existing && existing.length > 0) {
+      // update
+      res = await fetch(SUPA_URL + "/rest/v1/checklist?date=eq." + date, {
+        method: "PATCH",
+        headers: {...SUPA_HEADERS, "Prefer": "return=minimal"},
+        body: JSON.stringify({data})
+      });
+    } else {
+      // insert
+      res = await fetch(SUPA_URL + "/rest/v1/checklist", {
+        method: "POST",
+        headers: {...SUPA_HEADERS, "Prefer": "return=minimal"},
+        body: JSON.stringify({date, data})
+      });
+    }
+
+    if(!res.ok){
+      const err = await res.text();
+      throw new Error(err);
+    }
+    showToast("☁️ روی سرور ذخیره شد");
+  } catch(e) {
+    showToast("⚠️ ذخیره روی سرور ناموفق بود");
+    console.error("Supabase save error:", e);
+  }
+}
+
+document.getElementById("todayLabel").textContent=todayStr();
+initAccount();
+buildTwoCol(document.getElementById("pm-body"),PREMARKET,preState,"pm",updateDayStats);
+buildTwoCol(document.getElementById("eod-body"),EOD,eodState,"eod",updateDayStats);
+updateDayStats();
+supaLoad();
+</script>
+</body>
+</html>
